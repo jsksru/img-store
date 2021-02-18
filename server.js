@@ -34,23 +34,23 @@ app.post(`${PREFIX}/upload`, upload, authMiddleware.isAuth, async (req, res, nex
     const fileBuffer = req.file.buffer;
     const imageSize = sizeOf(fileBuffer);
 
-    const imageDir = `${config.uploadDir}/${imageId}`;
+    const imageDir = `${config.uploadDir}/${imageId.slice(0,2)}/${imageId}`;
     await fs.mkdir(imageDir, {recursive: true});
 
-    const pathToFile = `${config.uploadDir}/${imageId}/original.${extension}`;
+    const pathToFile = `${imageDir}/original.${extension}`;
     await fs.writeFile(pathToFile, fileBuffer);
 
     (await Jimp.read(pathToFile))
       .scaleToFit(config.dimensions.small.maxWidth, config.dimensions.small.maxHeight)
-      .write(`${config.uploadDir}/${imageId}/${config.dimensions.small.fileName}.${extension}`);
+      .write(`${imageDir}/${config.dimensions.small.fileName}.${extension}`);
 
     (await Jimp.read(pathToFile))
       .scaleToFit(config.dimensions.medium.maxWidth, config.dimensions.medium.maxHeight)
-      .write(`${config.uploadDir}/${imageId}/${config.dimensions.medium.fileName}.${extension}`);
+      .write(`${imageDir}/${config.dimensions.medium.fileName}.${extension}`);
 
     (await Jimp.read(pathToFile))
       .scaleToFit(config.dimensions.thumb.maxWidth, config.dimensions.thumb.maxHeight)
-      .write(`${config.uploadDir}/${imageId}/${config.dimensions.thumb.fileName}.${extension}`);
+      .write(`${imageDir}/${config.dimensions.thumb.fileName}.${extension}`);
 
     res.status(200).json({status: 'uploaded', imageId, size: {width: imageSize.width, height: imageSize.height} });
   } catch(err) {
