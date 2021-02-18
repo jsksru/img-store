@@ -8,6 +8,7 @@ const multer = require('multer');
 const upload = multer().single('image');
 const sizeOf = require('image-size');
 const Jimp = require('jimp');
+const db = require('./db');
 
 const PORT = config.port;
 const PREFIX = config.prefix;
@@ -51,6 +52,11 @@ app.post(`${PREFIX}/upload`, upload, authMiddleware.isAuth, async (req, res, nex
     (await Jimp.read(pathToFile))
       .scaleToFit(config.dimensions.thumb.maxWidth, config.dimensions.thumb.maxHeight)
       .write(`${imageDir}/${config.dimensions.thumb.fileName}.${extension}`);
+
+    db.addNew({
+      id: imageId,
+      url: `${imageDir}/original.${extension}`
+    });
 
     res.status(200).json({status: 'uploaded', imageId, size: {width: imageSize.width, height: imageSize.height} });
   } catch(err) {
