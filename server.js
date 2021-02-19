@@ -1,6 +1,7 @@
 const config = require('./config');
 const express = require('express');
 const multerUpload = require('multer')().single('image');
+const { Worker } = require('worker_threads');
 
 const { isAuth } = require('./middlewares/auth.middleware');
 const uploadController = require('./controllers/upload.controller');
@@ -25,4 +26,10 @@ app.use((err, req, res, next) => res.status(500).json({error: true, message: err
 
 
 // START
-app.listen(PORT, () => console.log(`Server listening on ${PORT} port...`));
+app.listen(PORT, () => {
+  console.log(`Server listening on ${PORT} port...`);
+  const ThreadsWorker = new Worker('./workers/imageProcessor.worker.js');
+  ThreadsWorker.on('message', (message) => console.log('[WORKER] message: ', message));
+  ThreadsWorker.on('error', (err) => console.log('[WORKER] error: ', err.message));
+  global.ThreadsWorker = ThreadsWorker; 
+});
