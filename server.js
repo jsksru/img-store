@@ -6,6 +6,7 @@ const { Worker } = require('worker_threads');
 const { isAuth } = require('./middlewares/auth.middleware');
 const uploadController = require('./controllers/upload.controller');
 const authController = require('./controllers/auth.controller');
+const imagesController = require('./controllers/images.controller');
 
 const app = express();
 const PORT = config.port;
@@ -18,6 +19,7 @@ app.use(express.json());
 // METHODS
 app.post(`${PREFIX}/auth`, authController.login);
 app.post(`${PREFIX}/upload`, isAuth, multerUpload, uploadController);
+app.get(`${PREFIX}/image/:id`, imagesController.getById);
 
 
 // ERROR HANDLING
