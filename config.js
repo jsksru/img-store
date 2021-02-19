@@ -5,21 +5,21 @@ module.exports = {
   uploadDir: 'uploads',
   allowTypes: ['image/jpeg', 'image/png'],
   maxSize: 5000000,
-  dimensions: {
-    thumb: {
+  dimensions: [
+    {
       fileName: 'thumb',
       maxWidth: 50,
       maxHeight: 50,
     },
-    small: {
+    {
       fileName: 'small',
       maxWidth: 150,
       maxHeight: 150,
     },
-    medium: {
+    {
       fileName: 'medium',
       maxWidth: 500,
       maxHeight: 500,
     }
-  }
+  ]
 };
