@@ -35,11 +35,11 @@ module.exports.login = async (req, res) => {
 
     const token = jwt.sign({userId: user.id}, SECRET);
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 'success',
       token,
     });
   } catch(err) {
-    res.status(401).json({error: true, message: err.message});
+    return res.status(401).json({error: true, message: err.message});
   }
 };
