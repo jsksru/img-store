@@ -1,8 +1,9 @@
 const config = require('../config');
-const jwt = require('jsonwebtoken');
 const argon2 = require('argon2');
+const jwt = require('jsonwebtoken');
 
 const SECRET = config.secret;
+
 const USERS = [
   {
     id: 1,
@@ -11,18 +12,7 @@ const USERS = [
   }
 ];
 
-module.exports.isAuth = (req, res, next) => {
-  try {
-    const requestToken = (req.get('Authorization') || '').replace('Bearer ', '');
-    if (!requestToken) throw new Error('Token not found');
-    const verify = jwt.verify(requestToken, SECRET);
-    if (verify) next();
-  } catch(err) {
-    next(new Error(err.message));
-  }
-};
-
-module.exports.login = async (req, res) => {
+const login = async (req, res) => {
   try {
     const {login, password} = req.body;
     if (!login || !password) throw new Error('Empty login or password!');
@@ -35,11 +25,10 @@ module.exports.login = async (req, res) => {
 
     const token = jwt.sign({userId: user.id}, SECRET);
 
-    return res.status(200).json({
-      status: 'success',
-      token,
-    });
+    return res.status(200).json({ status: 'success', token });
   } catch(err) {
     return res.status(401).json({error: true, message: err.message});
   }
 };
+
+module.exports.login = login;

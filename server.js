@@ -2,8 +2,9 @@ const config = require('./config');
 const express = require('express');
 const multerUpload = require('multer')().single('image');
 
-const authMiddleware = require('./middlewares/auth');
-const uploadController = require('./controllers/upload');
+const { isAuth } = require('./middlewares/auth.middleware');
+const uploadController = require('./controllers/upload.controller');
+const authController = require('./controllers/auth.controller');
 
 const app = express();
 const PORT = config.port;
@@ -14,8 +15,8 @@ app.use(express.json());
 
 
 // METHODS
-app.post(`${PREFIX}/auth`, authMiddleware.login);
-app.post(`${PREFIX}/upload`, authMiddleware.isAuth, multerUpload, uploadController);
+app.post(`${PREFIX}/auth`, authController.login);
+app.post(`${PREFIX}/upload`, isAuth, multerUpload, uploadController);
 
 
 // ERROR HANDLING
