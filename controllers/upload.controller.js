@@ -28,6 +28,7 @@ module.exports = async (req, res, next) => {
     };
 
     await db.addNew(imageInfo);
+    global.ThreadsWorker.postMessage({ imageDir, extension, imageId });
 
     return res.status(200).json({status: 'uploaded', imageId });
   } catch(err) {
