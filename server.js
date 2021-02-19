@@ -1,11 +1,11 @@
 const config = require('./config');
 const express = require('express');
-const app = express();
+const multerUpload = require('multer')().single('image');
+
 const authMiddleware = require('./middlewares/auth');
-const multer = require('multer');
-const upload = multer().single('image');
 const uploadController = require('./controllers/upload');
 
+const app = express();
 const PORT = config.port;
 const PREFIX = config.prefix;
 
@@ -15,7 +15,7 @@ app.use(express.json());
 
 // METHODS
 app.post(`${PREFIX}/auth`, authMiddleware.login);
-app.post(`${PREFIX}/upload`, authMiddleware.isAuth, upload, uploadController);
+app.post(`${PREFIX}/upload`, authMiddleware.isAuth, multerUpload, uploadController);
 
 
 // ERROR HANDLING
