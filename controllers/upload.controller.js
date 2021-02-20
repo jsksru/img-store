@@ -1,8 +1,13 @@
 const fs = require('fs').promises;
 const uuid = require('uuid').v4;
+const { Worker } = require('worker_threads');
 
 const config = require('../config');
 const db = require('../db');
+
+const ThreadsWorker = new Worker('./workers/imageProcessor.worker.js');
+ThreadsWorker.on('message', (message) => console.log('[WORKER] message: ', message));
+ThreadsWorker.on('error', (err) => console.log('[WORKER] error: ', err.message));
 
 module.exports = async (req, res, next) => {
   try {
@@ -28,7 +33,7 @@ module.exports = async (req, res, next) => {
     };
 
     await db.addNew(imageInfo);
-    global.ThreadsWorker.postMessage({ imageDir, extension, imageId });
+    ThreadsWorker.postMessage({ imageDir, extension, imageId });
 
     return res.status(200).json({status: 'uploaded', imageId });
   } catch(err) {
