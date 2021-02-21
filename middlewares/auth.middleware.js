@@ -13,3 +13,13 @@ module.exports.isAuth = (req, res, next) => {
     next(new Error(err.message));
   }
 };
+
+module.exports.checkAuth = (req, res, next) => {
+  req.isAuth = false;
+  try {
+    const requestToken = (req.get('Authorization') || '').replace('Bearer ', '');
+    const verify = jwt.verify(requestToken, SECRET);
+    if (verify) req.isAuth = true;
+  } catch {}
+  next();
+};

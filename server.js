@@ -4,7 +4,7 @@ const multerUpload = require('multer')().single('image');
 const mongoose = require('mongoose');
 const { Worker } = require('worker_threads');
 
-const { isAuth } = require('./middlewares/auth.middleware');
+const { isAuth, checkAuth } = require('./middlewares/auth.middleware');
 const uploadController = require('./controllers/upload.controller');
 const authController = require('./controllers/auth.controller');
 const imagesController = require('./controllers/images.controller');
@@ -22,7 +22,7 @@ app.use(express.static('./uploads'));
 // METHODS
 app.post(`${PREFIX}/auth`, authController.login);
 app.post(`${PREFIX}/upload`, isAuth, multerUpload, uploadController);
-app.get(`${PREFIX}/image/:id`, imagesController.getById);
+app.get(`${PREFIX}/image/:id`, checkAuth, imagesController.getById);
 
 
 // ERROR HANDLING
