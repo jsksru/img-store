@@ -28,7 +28,7 @@
 1. `git clone https://github.com/jsksru/img-store.git`
 2. `cd img-store`
 3. `npm install`
-4. Запусть mongo `docker-compose up` или указать путь к своей базе с файле `config.js`
+4. Запустить mongo `docker-compose up` или указать путь к своей базе с файле `config.js`
 5. `npm start`
 
 ### Файл Конфигурации `config.js` :
