@@ -4,26 +4,31 @@ const {isMainThread, parentPort} = require('worker_threads');
 const imageTransform = require('../utils/imageTransform');
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://root:example@localhost/images?authSource=admin', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb://root:example@localhost/images?authSource=admin', {useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 5000});
 
 if (!isMainThread) {
-  parentPort.on('message', ({imageDir, extension, imageId}) => {
-    try {
-      setTimeout(async () => {
-        const sizesCollector = [];
-
-        for (size of config.dimensions) {
-          const result = await imageTransform.imageResize(imageDir, extension, size.maxWidth, size.maxHeight, size.fileName);
-          sizesCollector.push(result);
+  try {
+    parentPort.on('message', async ({imageDir, extension, imageId}) => {
+      setTimeout(async() => {
+        try {
+          const sizesCollector = [];
+    
+          for (size of config.dimensions) {
+            sizesCollector.push(await imageTransform.imageResize(imageDir, extension, size.maxWidth, size.maxHeight, size.fileName));
+          }
+    
+          const newOriginalPath = await imageTransform.renameOriginal(imageDir, extension);
+          await db.editById(imageId, { original: newOriginalPath, complete: true, images: sizesCollector });
+    
+          parentPort.postMessage(`Processing image with id=${imageId} complete!`);
+        } catch(err) {
+          throw new Error(err);
         }
-  
-        const newOriginalPath = await imageTransform.renameOriginal(imageDir, extension);
-        await db.editById(imageId, { original: newOriginalPath, complete: true, images: sizesCollector });
-  
-        parentPort.postMessage(`Processing image with id=${imageId} complete!`);
       }, 0);
-    } catch(err) {
-      throw new Error(err.message);
-    }
-  });
+    });
+  } catch(err) {
+    throw new Error(err);
+  }
 }
+
+

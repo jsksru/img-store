@@ -12,22 +12,19 @@ module.exports = async (req, res, next) => {
 
     const imageId = uuid();
     const extension = req.file.originalname.slice(req.file.originalname.lastIndexOf('.') + 1, req.file.originalname.length);
+    const imageDir = `${uuid().slice(0,2)}/${imageId}`;
 
-    const imageDir = `${config.uploadDir}/${imageId.slice(0,2)}/${imageId}`;
-    await fs.mkdir(imageDir, {recursive: true});
+    await fs.mkdir(`${config.uploadDir}/${imageDir}`, {recursive: true});
+    await fs.writeFile(`${config.uploadDir}/${imageDir}/original.${extension}`, req.file.buffer);
 
-    const pathToFile = `${imageDir}/original.${extension}`;
-    await fs.writeFile(pathToFile, req.file.buffer);
-
-    const imageInfo = {
+    await db.addNew({
       imageId,
-      original: pathToFile,
+      original: `${imageDir}/original.${extension}`,
       uploaded: Date.now(),
       complete: false,
       images: null,
-    };
-
-    await db.addNew(imageInfo);
+    });
+    
     global.Worker.postMessage({ imageDir, extension, imageId });
 
     return res.status(200).json({status: 'uploaded', imageId });
