@@ -15,7 +15,11 @@
 
 **P.S.** В качестве хранения данных для изображений используется MongoDB. Для того чтобы по быстрому развернуть mongo базу - в корне проекта есть Docker-compose файл `docker-compose.yml` с простым конфигом.
 Если нет Докера то пора установить [сам докер](https://docs.docker.com/engine/install/) и [compose](https://docs.docker.com/compose/install/).
+
 Для запуска в корне выполнить комманду: `docker-compose up`
+
+Нода запускает сервер статики, все картинки доступны по адресу `http://localhost:3000/ + адрес картинки`
+
 - [http://localhost:8081](http://localhost:8081) админка для mongo
 - порт mongo стандартный - `27017`
 - строка для подключения `mongodb://root:example@localhost/images?authSource=admin`
