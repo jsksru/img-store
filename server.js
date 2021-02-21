@@ -2,6 +2,7 @@ const config = require('./config');
 const express = require('express');
 const multerUpload = require('multer')().single('image');
 const mongoose = require('mongoose');
+const { Worker } = require('worker_threads');
 
 const { isAuth } = require('./middlewares/auth.middleware');
 const uploadController = require('./controllers/upload.controller');
@@ -11,7 +12,7 @@ const imagesController = require('./controllers/images.controller');
 const app = express();
 const PORT = config.port;
 const PREFIX = config.prefix;
-mongoose.connect('mongodb://root:example@localhost/images?authSource=admin', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb://root:example@localhost/images?authSource=admin', {useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 5000});
 
 // SETUP
 app.use(express.json());
@@ -37,5 +38,9 @@ mongoose.connection.once('open', function() {
   console.log('DB Connected !')
   app.listen(PORT, () => {
     console.log(`Server listening on ${PORT} port...`);
+    const ThreadsWorker = new Worker('./workers/imageProcessor.worker.js');
+    ThreadsWorker.on('message', (message) => console.log('[WORKER] message: ', message));
+    ThreadsWorker.on('error', (err) => console.log('[WORKER] error: ', err.message));
+    global.Worker = ThreadsWorker;
   });
 });
