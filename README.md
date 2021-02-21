@@ -20,15 +20,6 @@
 - порт mongo стандартный - `27017`
 - строка для подключения `mongodb://root:example@localhost/images?authSource=admin`
 
-Данные о пользователе для авторазации лежат прямо в файле `auth.js` в массиве USERS.
-
-Данные для авторизации:
-```
-{
-  "login": "user",
-  "password": "12345"
-}
-```
 ### Установка & Запуск
 1. `git clone https://github.com/jsksru/img-store.git`
 2. `cd img-store`
@@ -58,11 +49,11 @@
   Body:
   ```
   {
-    "username": "user",
+    "login": "user",
     "password": "12345"
   }
   ```
-  username/password - данныее пользователя прописаны в `auth.controller.js` в массиве `USERS` в реале берутся из базы.
+  login/password - данныее пользователя прописаны в `auth.controller.js` в массиве `USERS` в реале берутся из базы.
   Успешный ответ:
   ```
   {
@@ -70,6 +61,7 @@
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYxMzU1NDk2NX0.li-n9KTgee7jjlFJLieSh6w1BuQwoviosgSMJQQona4"
   }
   ```
+  Токен можно сохранить в `localStorage`, и при для авторизации указывать его в `Headers` в поле `Authorization` значение `Bearer токен`
 - #### `POST: /api/v1/upload`
   Загрузка изображения.
   При валидном токене принимает один файл допустимого mime-типа и размера (настраивается в `config.js`).
@@ -161,7 +153,7 @@
   }
   ```
 
-### Ошибки
+### Ответ в случае ошибки
 При возникновении ошибки сервер отвечает соответсвующим статусом и ответом ввида:
 ```
 {
