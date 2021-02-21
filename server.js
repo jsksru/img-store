@@ -16,6 +16,7 @@ mongoose.connect('mongodb://root:example@localhost/images?authSource=admin', {us
 
 // SETUP
 app.use(express.json());
+app.use(express.static('./uploads'));
 
 
 // METHODS
