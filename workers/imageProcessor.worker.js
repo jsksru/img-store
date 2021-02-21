@@ -4,7 +4,7 @@ const {isMainThread, parentPort} = require('worker_threads');
 const imageTransform = require('../utils/imageTransform');
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://root:example@localhost/images?authSource=admin', {useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 5000});
+mongoose.connect(config.dbString, {useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 5000});
 
 if (!isMainThread) {
   try {

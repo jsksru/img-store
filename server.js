@@ -12,7 +12,7 @@ const imagesController = require('./controllers/images.controller');
 const app = express();
 const PORT = config.port;
 const PREFIX = config.prefix;
-mongoose.connect('mongodb://root:example@localhost/images?authSource=admin', {useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 5000});
+mongoose.connect(config.dbString, {useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 5000});
 
 // SETUP
 app.use(express.json());
