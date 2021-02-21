@@ -28,12 +28,14 @@
 1. `git clone https://github.com/jsksru/img-store.git`
 2. `cd img-store`
 3. `npm install`
-4. `npm start`
+4. Запусть mongo `docker-compose up` или указать путь к своей базе с файле `config.js`
+5. `npm start`
 
 ### Файл Конфигурации `config.js` :
 - `port` (number) - Порт на котором работает API
 - `prefix` string - Префикс API для запросов
 - `secret` string - ключ сервера для шифрования JWT токена,
+- `dbString` string - строка для подключения к mongo.
 - `uploadDir` string - папка для хранения изображений,
 - `allowTypes` array(string) - разрешенные к загрузке mime-типы файлов
 - `maxSize` number - Максимально допустимый размер файла в байтах
